@@ -1,0 +1,162 @@
+import java.util.Scanner;
+
+class Node {
+    String name;
+    int age;
+    String address;
+    int Pno;
+    String bloodgroup;
+    int reg;
+    int priority;
+    Node next;
+
+    public Node(String name, int age, String address, int Pno, String bloodgroup, int reg, int priority) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.Pno = Pno;
+        this.bloodgroup = bloodgroup;
+        this.reg = reg;
+        this.priority = priority;
+        this.next = null;
+    }
+}
+
+public class Main {
+    public static int registrationNumber = 1000; // Track the registration number
+    
+    public static void main(String[] args) {
+        Node start = null;
+        int option;
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("\n\t\t\t---------------------------------");
+            System.out.println("\t\t\t  WELCOME TO KIMS HOSPITAL..!!");
+            System.out.println("\t\t\t---------------------------------");
+            System.out.println("\t\t\t1. ADD A PATIENT FOR DOCTORS APPOINTMENT");
+            System.out.println("\t\t\t2. DELETE A PATIENT FROM THE RECORD");
+            System.out.println("\t\t\t3. DISPLAY ALL APPOINTMENTS");
+            System.out.println("\t\t\t4. EXIT");
+            System.out.print("\t\t\tPLEASE ENTER YOUR CHOICE: ");
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    start = insert(start);
+                    scanner.nextLine();
+                    clearScreen();
+                    break;
+                case 2:
+                    start = delete(start);
+                    scanner.nextLine();
+                    clearScreen();
+                    break;
+                case 3:
+                    display(start);
+                    scanner.nextLine();
+                    break;
+                case 4:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again.\n");
+                    break;
+            }
+        } while (option != 4);
+    }
+
+    public static Node insert(Node start) {
+        Scanner scanner = new Scanner(System.in);
+        int val2, val4, val6, pri;
+
+        System.out.print("Enter patient name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter patient age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter patient's address: ");
+        String address = scanner.nextLine();
+        System.out.print("Enter patient Phone Number: ");
+        int Pno = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter patient's Blood Group: ");
+        String bloodgroup = scanner.nextLine();
+        pri = getPriority(scanner);
+
+        Node newNode = new Node(name, age, address, Pno, bloodgroup, registrationNumber, pri);
+        registrationNumber++; // Increment registration number for the next patient
+
+        if (start == null || pri < start.priority) {
+            newNode.next = start;
+            start = newNode;
+        } else {
+            Node p = start;
+            while (p.next != null && p.next.priority <= pri) {
+                p = p.next;
+            }
+            newNode.next = p.next;
+            p.next = newNode;
+        }
+        return start;
+    }
+
+    public static int getPriority(Scanner scanner) {
+        System.out.println("Enter Disease Number:");
+        table();
+        return scanner.nextInt();
+    }
+
+    public static Node delete(Node start) {
+        if (start == null) {
+            System.out.println("\nNO PATIENT RECORD TO DELETE\n");
+            return start;
+        } else {
+            Node ptr = start;
+            System.out.println("\nDELETED RECORD IS: " + ptr.reg + "\n");
+            start = start.next;
+            ptr = null;
+        }
+        return start;
+    }
+
+    public static void display(Node start) {
+    if (start == null) {
+        System.out.println("\nNO APPOINTMENTS FOR TODAY\n");
+    } else {
+        System.out.println("\nTHE LIST OF APPOINTMENTS FOR TODAY IS:\n");
+
+        Node ptr = start;
+        while (ptr != null) {
+            System.out.println("Registration: " + String.format("%04d", ptr.reg));
+            System.out.println("Patient Name: " + ptr.name);
+            System.out.println("Address: " + ptr.address);
+            System.out.println("Age: " + ptr.age);
+            System.out.println("Phone Number: " + ptr.Pno);
+            System.out.println("Blood Group: " + ptr.bloodgroup);
+            System.out.println();
+
+            System.out.println("--------------------------------------"); // Special character
+            ptr = ptr.next;
+        }
+    }
+}
+    public static void table() 
+    {
+        System.out.println("Disease Numbers\tDisease");
+        System.out.println("1\t\t\tHEART STROKE / ACCIDENT");
+        System.out.println("2\t\t\tCOVID");
+        System.out.println("3\t\t\tSEVERE WOUND / BLEEDING");
+        System.out.println("4\t\t\tCANCER");
+        System.out.println("5\t\t\tCHEST PAIN");
+        System.out.println("6\t\t\tFRACTURE");
+        System.out.println("7\t\t\tDIABETES CHECKUP");
+        System.out.println("8\t\t\tINFECTIONS");
+        System.out.println("9\t\t\tCOMMON COLD-COUGH / ACHE");
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+}
+
